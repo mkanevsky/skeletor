@@ -1,0 +1,29 @@
+fw mean WER 0.434 | post-speech latency ms: median 2542 max 2928
+    q1_greeting_avri.wav WER 0.25  2686ms  שלום, מה שלומך יהיה?
+    q1_greeting_hila.wav WER 0.50  2238ms  מה שלומך היוםינם?
+    q2_weather_avri.wav WER 0.45  2571ms  מה אתה ממליץ לעשות בוע עם מזג אוויר יפה?
+    q2_weather_hila.wav WER 1.00  2928ms  אמל MexSTALK
+    q3_instruction_avri.wav WER 0.40  2512ms  תגיד לי בבקשה שלOrange טיפים קצריםÿ- ערוץ בבוקר
+    q3_instruction_hila.wav WER 0.00  2393ms  תגיד לי בבקשה שלושה טיפים קצרים앵커 כדי להתחיל לרוץ בבוקר.
+sherpa mean WER 0.045 | post-speech latency ms: median 2 max 32
+    q1_greeting_avri.wav WER 0.00     2ms  שלום, מה שלומך היום
+    q1_greeting_hila.wav WER 0.00     1ms  שלום, מה שלומך היום?
+    q2_weather_avri.wav WER 0.18     1ms  מה אתה ממליץ לעשות בסוף השבוע עם מזג האוויר יפה
+    q2_weather_hila.wav WER 0.09     1ms  מה אתה ממליץ לעשות בסוף השבוע עם מזג האוויר יהיה יפה
+    q3_instruction_avri.wav WER 0.00    32ms  תגיד לי בבקשה שלושה טיפים קצרים כדי להתחיל לרוץ בבוקר
+    q3_instruction_hila.wav WER 0.00    32ms  תגיד לי בבקשה שלושה טיפים קצרים כדי להתחיל לרוץ בבוקר
+
+TTS round-trip (reply audio -> ivrit-ai whisper):
+   q1_greeting_avri_sherpa_gemma4e2b_blue_0.wav -> היי, אני בסדר ג BRANDON. תודה רגBry. תודה ששאלתבת. מה שלרה?
+   q1_greeting_hila_sherpa_gemma4e2b_blue_0.wav -> אני בסדר גמור. תודה שאלת. מה שלא?
+   q2_weather_avri_sherpa_gemma4e2b_blue_0.wav -> קח את עצמך לטיול, או פשוט תצא לשבת בגינה.
+   q2_weather_hila_sherpa_gemma4e2b_blue_0.wav -> לטיול או פשוט לצא לטייל בטבע.
+   q3_instruction_avri_sherpa_gemma4e2b_blue_0.wav -> תקשיב טוב, התחל עם הליכה מהירה וקצב קל, ואל תשכח לחמם את הגוף קצת לפני שאתה מתחיל לרוץ.
+   q3_instruction_hila_sherpa_gemma4e2b_blue_0.wav -> קם מClintleading מוקדם ותחמם קצת. לפני שאת Moroccan יוצא לריצה, תתחיל לאט ותקצב את הק...] שלך.
+תהנה מהשמש והאוויר בבוקר.
+
+--- Extra check (same 6 clips): faster-whisper ivrit-ai turbo, CPU, 8 threads ---
+float32 beam1: all 6 clips correct (WER ~0.03: 1 word diff on one clip), median 3932 ms after speech end
+float32 beam5: all correct, median 4374 ms
+int8_float32 beam5: 3/6 clips contain English-token hallucinations ("SUBSCRI", "ELIPE", "iffany"), median 2697 ms
+int8 beam1 (table above): mean WER 0.43 -> int8 CT2 quantisation of this model is NOT usable here
