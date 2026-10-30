@@ -1,5 +1,7 @@
 # Hebrew low-latency voice pipeline prototype
 
+📖 **Full documentation:** [DOCS.md](DOCS.md) (architecture, installation, CLI reference, backends, personas, voices/FX, echo gating, results, testing, troubleshooting).
+
 `audio (he) -> STT -> LLM (streamed) -> chunker -> TTS`, with per-stage latency and **time-to-first-audio (TTFA)**
 measured from the *end of user speech*. Everything below ran on this box (8 vCPU, 15 GB RAM, **no GPU**; Gemini API key added 2026-10-26).
 
@@ -20,7 +22,7 @@ python eval_stt_and_tts_roundtrip.py          # WER + TTS intelligibility
 | `--speed` | BlueTTS speaking rate (default 1.0) |
 | `--first-words N` | start TTS on the first N words even before punctuation |
 
-Files: `pipeline.py` (CLI/harness), `hv_backends.py` (backends + chunker), `eval_stt_and_tts_roundtrip.py`, `eval_results.txt`,
+Files: `pipeline.py` (CLI/harness), `live.py` (live mic/speaker conversation), `test_live.py` (live-mode simulation test), `hv_backends.py` (backends + chunker), `eval_stt_and_tts_roundtrip.py`, `eval_results.txt`,
 `results_*.json` (raw per-turn numbers), `out/*.wav` (reply audio), `test_audio/` (6 clips generated with edge-tts he-IL Avri/Hila).
 
 ## Measured results (this box, CPU only)
@@ -112,10 +114,61 @@ TTFA differences between 1, 2 and 3 are mostly LLM-side variance (the persona re
 Persona quality: Gemma's witch replies are short and spooky but often dodge the question ("החושך הוא הבית שלי, ילד קטן"). Gemini 3.5 Flash-Lite stays in character
 and still answers, but runs longer than 2 sentences, has some odd words ("טיפות זרת ממרתח עלי דודנה"), mixes singular and plural address, and gave one truncated reply.
 
+## Live mode (microphone + speakers) — `live.py`
+Talk to the bot through a real microphone and speakers. It uses the same backends and flags as `pipeline.py`: STT is always sherpa Zipformer, and `--llm/--tts/--voice/--voice-fx/--persona/--speed/--first-words` work as above.
+
+**Install:** `pip install sounddevice` (already in `setup.sh`, together with scipy/pedalboard and the Silero VAD model `vad/silero_vad.onnx`, which `live.py` also downloads automatically if missing).
+Linux needs PortAudio: `sudo apt install libportaudio2`. On macOS and Windows the sounddevice wheel bundles it, so it works out of the box.
+
+**Recommended (local, no API key):**
+```
+. .venv/bin/activate
+python live.py --list-devices                       # pick devices (index or name substring)
+python live.py --llm gemma4e2b --voice witch_gacrux --voice-fx witch --persona witch
+python live.py --llm gemma4e2b --voice witch_gacrux --voice-fx witch --persona witch --input-device 2 --output-device 3
+```
+Stay quiet for the first ~1 s (ambient calibration). The console shows `listening...`, `...speech`, `heard: <text>`, `bot: <streamed reply>` and the latency per turn. Ctrl-C quits.
+`--llm gemini:gemini-3.1-flash-lite:minimal` works too (needs `GEMINI_API_KEY`).
+The last turns are kept as conversation history (`--history 3`; 0 = single-turn). The window is append-only and is trimmed to the newest turn when it overflows, which keeps llama.cpp's prompt cache effective.
+
+**How it avoids triggering on itself and on noise**
+- *Half-duplex echo gate:* mic frames captured while the bot is speaking, plus `--tail-ms` (300) after playback ends, are dropped. Once the gate reopens, the VAD, endpointer and STT stream are reset, so no echo leaks into the next turn. Speech during the bot's "thinking" time is also ignored, so wait for the bot to finish.
+- *Noise filter:* 90 Hz high-pass → per-32 ms frame Silero VAD (prob ≥ `--vad-threshold`) **and** an RMS gate (max(`--energy-min-db`, calibrated floor + `--energy-margin-db`)).
+  A turn starts only after `--min-speech-ms` (250) of speech-like frames and ends after `--end-silence-ms` (500) of silence. 300 ms of pre-roll keeps the first syllable.
+  STT results that are empty, shorter than `--min-chars`, or only fillers (אממ, אה, הממ, …) are discarded without a reply.
+
+| key flag | default | meaning |
+|---|---|---|
+| `--input-device / --output-device` | system default | index or name substring (`--list-devices`) |
+| `--tail-ms` | 300 | extra mic mute after playback ends (raise for rooms with long reverb) |
+| `--vad-threshold` | 0.5 | Silero speech probability |
+| `--energy-margin-db` / `--energy-min-db` | 10 / -50 | RMS gate above the calibrated noise floor / absolute minimum |
+| `--calibrate-s` | 1.0 | ambient calibration at start-up |
+| `--min-speech-ms` / `--end-silence-ms` | 250 / 500 | turn start / turn end |
+| `--highpass-hz` | 90 | 0 = off |
+| `--min-chars` | 2 | shorter transcripts are ignored |
+| `--history` | 3 | previous turns sent to the LLM |
+| `--barge-in` | off | experimental: interrupt the bot when you talk loudly over it (`--barge-db`, `--barge-min-ms`). Only usable with headphones or AEC |
+| `--no-echo-gate` | – | disables the gate (for testing only: the bot will answer itself) |
+| `--show-partials`, `--log-json f.json` | – | debug output / per-event JSON log |
+
+Tip: use **headphones**, or a speakerphone / conference mic with hardware echo cancellation (AEC). With speakers and a plain mic the bot is strictly half-duplex. With headphones or AEC, `--barge-in` becomes practical.
+
+**Simulation test** (no hardware): `python test_live.py`. It builds a 169 s mic track with a pink-noise/hum background, 27 noise events (click, knock, cough, clap, typing, a 3 s fan at -32 dBFS, door slam, voiced cough, a 180 ms speech fragment, and a spoken filler "אממממ") and the 6 test clips.
+It then runs `live.py --sim-input` through the *same* gating code, with a simulated speaker whose output is mixed back into the mic as echo (gain 0.5, 40 ms delay, real-time pacing).
+Outputs: `out_live/sim_out_gated.wav`, `*_mic_vs_bot.wav` (L = mic incl. echo, R = bot), `test_report.json`.
+Results (2026-10-29, Gemma-4 E2B + witch voice/fx/persona, default flags):
+- noise-triggered turns **0/27 events**. The filler started 1 turn, which the STT filter discarded, so the bot did not reply.
+- self-triggered turns **0**. The gate dropped 48.7 s of mic audio during or after playback; 1029 of those frames would have passed as speech.
+- speech: **6/6** clips gave exactly one turn, a correct transcript (mean WER 0.077) and a reply.
+- first audio: median **1.41 s** (1.06-1.63) after end-of-turn detection, i.e. **~1.9 s** after the user stopped speaking (incl. the 500 ms end-silence wait).
+- control run with `--no-echo-gate`: 7 of 8 "user" transcripts were the bot's own replies, so the gate is necessary.
+
 ## Caveats / what was not tested
 - Only the Gemini text API was tested with a real key. OpenAI Realtime, Gemini Live, Deepgram, ElevenLabs, Azure, Google TTS/STT, Groq/Cerebras LLMs were **not** run. Backends for OpenAI-compat LLMs and ElevenLabs are coded but untested.
 - RenikudPlus `datastore.json` returns 404 on HF today; `BlueTTSLocal` disables that optional rescorer (G2P still works) – Hebrew pronunciation may be slightly worse than upstream default.
 - LLM ttft of 55-60 ms on 2nd reps is llama.cpp prompt-cache reuse; use the 1st-rep numbers (150-400 ms) as realistic.
 - Whisper-class models on CPU are too slow for this use (4-6 s); they need a GPU.
 - Box has no real mic/speaker and no network-path realism (TCP connect ~1-2 ms = proxy); Gemini HTTPS RTT measured as above.
-- Not implemented yet: VAD/endpointing, barge-in, audio streaming out of the TTS (BlueTTS synthesises per chunk), WebRTC transport.
+- Live mode was only tested in simulation, plus a silent virtual ALSA device on this box (no real mic/speaker), with synthetic edge-tts voices and synthetic noises. Real rooms (reverb, louder/closer TV speech) may need `--tail-ms`/`--energy-margin-db` tuning.
+- Live mode is half-duplex; barge-in is experimental and needs headphones/AEC. Not implemented: software AEC, audio streaming within a TTS chunk (BlueTTS synthesises per chunk), WebRTC transport.

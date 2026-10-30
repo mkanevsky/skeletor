@@ -119,8 +119,13 @@ class LocalLlamaLLM:
         self.name = "llama.cpp:" + Path(path).name
     def warmup(self):
         for _ in self.stream("שלום"): break
-    def stream(self, user_text):
-        msgs = [{"role": "user", "content": SYSTEM_PROMPT + "\n\n" + user_text}]  # gemma has no system role
+    def stream(self, user_text, history=None):
+        """history: optional list of (user, assistant) pairs from earlier turns (oldest first)."""
+        msgs = []
+        for u, b in (history or []):
+            msgs += [{"role": "user", "content": u}, {"role": "assistant", "content": b}]
+        msgs.append({"role": "user", "content": user_text})
+        msgs[0] = {"role": "user", "content": SYSTEM_PROMPT + "\n\n" + msgs[0]["content"]}  # gemma has no system role
         for ch in self.l.create_chat_completion(messages=msgs, stream=True, max_tokens=80, temperature=0.6):
             d = ch["choices"][0]["delta"].get("content")
             if d: yield d
@@ -133,9 +138,12 @@ class OpenAICompatLLM:
         self.model = model; self.name = f"openai-compat:{model}"
     def warmup(self):
         for _ in self.stream("שלום"): break
-    def stream(self, user_text):
-        for ch in self.c.chat.completions.create(model=self.model, stream=True, max_tokens=120,
-                messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": user_text}]):
+    def stream(self, user_text, history=None):
+        msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
+        for u, b in (history or []):
+            msgs += [{"role": "user", "content": u}, {"role": "assistant", "content": b}]
+        msgs.append({"role": "user", "content": user_text})
+        for ch in self.c.chat.completions.create(model=self.model, stream=True, max_tokens=120, messages=msgs):
             if ch.choices and ch.choices[0].delta.content:
                 yield ch.choices[0].delta.content
 
@@ -218,8 +226,12 @@ class GeminiNativeLLM:
         self.last_thought_tokens = None
     def warmup(self):
         for _ in self.stream("שלום"): pass
-    def stream(self, user_text):
-        body = {"contents": [{"role": "user", "parts": [{"text": user_text}]}],
+    def stream(self, user_text, history=None):
+        contents = []
+        for u, b in (history or []):
+            contents += [{"role": "user", "parts": [{"text": u}]}, {"role": "model", "parts": [{"text": b}]}]
+        contents.append({"role": "user", "parts": [{"text": user_text}]})
+        body = {"contents": contents,
                 "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]},
                 "generationConfig": {"maxOutputTokens": self.max_tokens, "temperature": 0.7, "thinkingConfig": self.tc}}
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:streamGenerateContent?alt=sse"

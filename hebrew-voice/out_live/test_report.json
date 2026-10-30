@@ -1,0 +1,596 @@
+{
+ "input": {
+  "speech": [
+   {
+    "name": "q1_greeting_avri",
+    "t0": 29.458,
+    "t1": 32.554
+   },
+   {
+    "name": "q1_greeting_hila",
+    "t0": 49.554,
+    "t1": 52.602
+   },
+   {
+    "name": "q2_weather_avri",
+    "t0": 69.602,
+    "t1": 74.018
+   },
+   {
+    "name": "q2_weather_hila",
+    "t0": 91.018,
+    "t1": 95.17
+   },
+   {
+    "name": "q3_instruction_avri",
+    "t0": 112.17,
+    "t1": 117.186
+   },
+   {
+    "name": "q3_instruction_hila",
+    "t0": 134.186,
+    "t1": 138.866
+   }
+  ],
+  "noise": [
+   {
+    "name": "click",
+    "t0": 2.0,
+    "t1": 2.013
+   },
+   {
+    "name": "click",
+    "t0": 2.988,
+    "t1": 3.0
+   },
+   {
+    "name": "knock",
+    "t0": 4.139,
+    "t1": 4.219
+   },
+   {
+    "name": "cough",
+    "t0": 5.012,
+    "t1": 5.432
+   },
+   {
+    "name": "click",
+    "t0": 6.137,
+    "t1": 6.149
+   },
+   {
+    "name": "knock",
+    "t0": 7.001,
+    "t1": 7.081
+   },
+   {
+    "name": "clap",
+    "t0": 8.274,
+    "t1": 8.334
+   },
+   {
+    "name": "cough",
+    "t0": 9.038,
+    "t1": 9.458
+   },
+   {
+    "name": "typing",
+    "t0": 10.174,
+    "t1": 12.674
+   },
+   {
+    "name": "knock",
+    "t0": 13.433,
+    "t1": 13.513
+   },
+   {
+    "name": "fan",
+    "t0": 14.148,
+    "t1": 17.148
+   },
+   {
+    "name": "slam",
+    "t0": 18.109,
+    "t1": 18.509
+   },
+   {
+    "name": "click",
+    "t0": 19.703,
+    "t1": 19.716
+   },
+   {
+    "name": "cough",
+    "t0": 20.695,
+    "t1": 21.115
+   },
+   {
+    "name": "clap",
+    "t0": 22.03,
+    "t1": 22.09
+   },
+   {
+    "name": "voiced_cough",
+    "t0": 22.818,
+    "t1": 23.188
+   },
+   {
+    "name": "short_speech",
+    "t0": 24.141,
+    "t1": 24.321
+   },
+   {
+    "name": "voiced_cough",
+    "t0": 25.142,
+    "t1": 25.512
+   },
+   {
+    "name": "filler",
+    "t0": 26.483,
+    "t1": 27.249
+   },
+   {
+    "name": "cough",
+    "t0": 155.866,
+    "t1": 156.286
+   },
+   {
+    "name": "knock",
+    "t0": 157.026,
+    "t1": 157.106
+   },
+   {
+    "name": "voiced_cough",
+    "t0": 157.714,
+    "t1": 158.084
+   },
+   {
+    "name": "click",
+    "t0": 158.716,
+    "t1": 158.728
+   },
+   {
+    "name": "slam",
+    "t0": 159.896,
+    "t1": 160.296
+   },
+   {
+    "name": "typing",
+    "t0": 161.331,
+    "t1": 163.831
+   },
+   {
+    "name": "short_speech",
+    "t0": 164.725,
+    "t1": 164.905
+   },
+   {
+    "name": "cough",
+    "t0": 165.995,
+    "t1": 166.415
+   }
+  ],
+  "dur_s": 169.26
+ },
+ "frontend": [
+  {
+   "name": "click",
+   "t": 2.0,
+   "peak_db": -33.8,
+   "max_p": 0.06,
+   "loud_frames": 1,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "click",
+   "t": 2.988,
+   "peak_db": -33.8,
+   "max_p": 0.06,
+   "loud_frames": 1,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "knock",
+   "t": 4.139,
+   "peak_db": -20.7,
+   "max_p": 0.46,
+   "loud_frames": 3,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "cough",
+   "t": 5.012,
+   "peak_db": -24.7,
+   "max_p": 0.18,
+   "loud_frames": 13,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "click",
+   "t": 6.137,
+   "peak_db": -33.8,
+   "max_p": 0.05,
+   "loud_frames": 1,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "knock",
+   "t": 7.001,
+   "peak_db": -23.2,
+   "max_p": 0.1,
+   "loud_frames": 3,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "clap",
+   "t": 8.274,
+   "peak_db": -14.2,
+   "max_p": 0.03,
+   "loud_frames": 2,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "cough",
+   "t": 9.038,
+   "peak_db": -25.7,
+   "max_p": 0.07,
+   "loud_frames": 12,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "typing",
+   "t": 10.174,
+   "peak_db": -24.9,
+   "max_p": 0.05,
+   "loud_frames": 22,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "knock",
+   "t": 13.433,
+   "peak_db": -22.7,
+   "max_p": 0.11,
+   "loud_frames": 3,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "fan",
+   "t": 14.148,
+   "peak_db": -30.8,
+   "max_p": 0.08,
+   "loud_frames": 90,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "slam",
+   "t": 18.109,
+   "peak_db": -16.3,
+   "max_p": 0.21,
+   "loud_frames": 10,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "click",
+   "t": 19.703,
+   "peak_db": -33.8,
+   "max_p": 0.05,
+   "loud_frames": 1,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "cough",
+   "t": 20.695,
+   "peak_db": -23.1,
+   "max_p": 0.2,
+   "loud_frames": 12,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "clap",
+   "t": 22.03,
+   "peak_db": -12.3,
+   "max_p": 0.04,
+   "loud_frames": 2,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "voiced_cough",
+   "t": 22.818,
+   "peak_db": -23.2,
+   "max_p": 0.12,
+   "loud_frames": 11,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "short_speech",
+   "t": 24.141,
+   "peak_db": -19.8,
+   "max_p": 0.94,
+   "loud_frames": 4,
+   "vad_frames": 4,
+   "max_run_ms": 96
+  },
+  {
+   "name": "voiced_cough",
+   "t": 25.142,
+   "peak_db": -23.3,
+   "max_p": 0.06,
+   "loud_frames": 12,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "filler",
+   "t": 26.483,
+   "peak_db": -18.8,
+   "max_p": 0.97,
+   "loud_frames": 21,
+   "vad_frames": 14,
+   "max_run_ms": 416
+  },
+  {
+   "name": "cough",
+   "t": 155.866,
+   "peak_db": -23.6,
+   "max_p": 0.18,
+   "loud_frames": 12,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "knock",
+   "t": 157.026,
+   "peak_db": -20.3,
+   "max_p": 0.09,
+   "loud_frames": 3,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "voiced_cough",
+   "t": 157.714,
+   "peak_db": -23.9,
+   "max_p": 0.08,
+   "loud_frames": 12,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "click",
+   "t": 158.716,
+   "peak_db": -33.8,
+   "max_p": 0.02,
+   "loud_frames": 1,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "slam",
+   "t": 159.896,
+   "peak_db": -18.9,
+   "max_p": 0.6,
+   "loud_frames": 9,
+   "vad_frames": 1,
+   "max_run_ms": 32
+  },
+  {
+   "name": "typing",
+   "t": 161.331,
+   "peak_db": -24.5,
+   "max_p": 0.03,
+   "loud_frames": 24,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  },
+  {
+   "name": "short_speech",
+   "t": 164.725,
+   "peak_db": -19.7,
+   "max_p": 0.93,
+   "loud_frames": 4,
+   "vad_frames": 4,
+   "max_run_ms": 96
+  },
+  {
+   "name": "cough",
+   "t": 165.995,
+   "peak_db": -24.8,
+   "max_p": 0.16,
+   "loud_frames": 12,
+   "vad_frames": 0,
+   "max_run_ms": 0
+  }
+ ],
+ "gated": {
+  "classify": {
+   "turn_starts": 7,
+   "starts_speech": 6,
+   "starts_noise": [],
+   "starts_self": [],
+   "starts_filler": [
+    26.4
+   ],
+   "per_clip": {
+    "q1_greeting_avri": [
+     29.44
+    ],
+    "q1_greeting_hila": [
+     49.536
+    ],
+    "q2_weather_avri": [
+     69.568
+    ],
+    "q2_weather_hila": [
+     90.976
+    ],
+    "q3_instruction_avri": [
+     112.16
+    ],
+    "q3_instruction_hila": [
+     134.144
+    ]
+   }
+  },
+  "stats": {
+   "frames": 5289,
+   "dropped_frames": 1523,
+   "dropped_during_playback": 1133,
+   "dropped_loud": 1114,
+   "dropped_speechlike": 1029
+  },
+  "wer": [
+   0.0,
+   0.0,
+   0.2727272727272727,
+   0.09090909090909091,
+   0.0,
+   0.1
+  ],
+  "latency_ms": [
+   1062.1,
+   1410.9,
+   1438.4,
+   1415.6,
+   1625.0,
+   1207.3
+  ],
+  "latency_from_speech_end_ms": [
+   1574.1,
+   1922.9,
+   1950.4,
+   1927.6,
+   2137.0,
+   1719.3
+  ],
+  "heard": [
+   {
+    "t": 32.196,
+    "ev": "heard",
+    "text": "שלום, מה שלומך היום",
+    "stt_ms": 1.2,
+    "utt_s": 2.72
+   },
+   {
+    "t": 52.233,
+    "ev": "heard",
+    "text": "שלום, מה שלומך היום?",
+    "stt_ms": 38.9,
+    "utt_s": 2.66
+   },
+   {
+    "t": 73.635,
+    "ev": "heard",
+    "text": "מה אתה ממליץ לעשות בסוף השבוע עם מזג האווירי יפה",
+    "stt_ms": 1.1,
+    "utt_s": 4.06
+   },
+   {
+    "t": 94.822,
+    "ev": "heard",
+    "text": "מה אתה ממליץ לעשות בסוף השבוע עם מזג האוויר יהיה יפה?",
+    "stt_ms": 36.1,
+    "utt_s": 3.81
+   },
+   {
+    "t": 116.837,
+    "ev": "heard",
+    "text": "תגיד לי בבקשה שלושה טיפים קצרים כדי להתחיל לרוץ בבוקר",
+    "stt_ms": 35.3,
+    "utt_s": 4.64
+   },
+   {
+    "t": 138.499,
+    "ev": "heard",
+    "text": "תגיד לי בבקשה שלושה טיפים קצרים כדי להתחיל לרוץ בבו",
+    "stt_ms": 1.2,
+    "utt_s": 4.35
+   }
+  ],
+  "bots": [
+   {
+    "t": 36.866,
+    "ev": "bot",
+    "text": "החושך הוא הבית שלי, ילד קטן. תמיד טוב כאן.",
+    "aborted": false,
+    "latency_ms": 1062.1,
+    "latency_from_speech_end_ms": 1574.1,
+    "stt_ms": 1.2,
+    "llm_ttft_ms": 201.4
+   },
+   {
+    "t": 57.087,
+    "ev": "bot",
+    "text": "הלילה קר, וצריך להגן על עצמך.",
+    "aborted": false,
+    "latency_ms": 1410.9,
+    "latency_from_speech_end_ms": 1922.9,
+    "stt_ms": 38.9,
+    "llm_ttft_ms": 336.4
+   },
+   {
+    "t": 80.513,
+    "ev": "bot",
+    "text": "הירח המלא יאיר את הדרך, יקירי. אל תצא מהבקתה. חה חה חה.",
+    "aborted": false,
+    "latency_ms": 1438.4,
+    "latency_from_speech_end_ms": 1950.4,
+    "stt_ms": 1.1,
+    "llm_ttft_ms": 374.5
+   },
+   {
+    "t": 101.563,
+    "ev": "bot",
+    "text": "השמש תגרום לך להתפעל, אבל אני ממליץ לך להישאר בצללי.",
+    "aborted": false,
+    "latency_ms": 1415.6,
+    "latency_from_speech_end_ms": 1927.6,
+    "stt_ms": 36.1,
+    "llm_ttft_ms": 388.3
+   },
+   {
+    "t": 130.481,
+    "ev": "bot",
+    "text": "השמש זורחת, יקירי. תשתה מים קרים, תרגיש את האדמה מתחת לרגליים, ותזכור שגם הליכה היא דרך להתקרב אל הנסתר. חה חה חה.",
+    "aborted": false,
+    "latency_ms": 1625.0,
+    "latency_from_speech_end_ms": 2137.0,
+    "stt_ms": 35.3,
+    "llm_ttft_ms": 715.6
+   },
+   {
+    "t": 148.355,
+    "ev": "bot",
+    "text": "השחר יקרא לך, ילד קטן. תרגיש את הכוח שמתעורר בך, תתעלם מהצללים, והיציא אל הריק.",
+    "aborted": false,
+    "latency_ms": 1207.3,
+    "latency_from_speech_end_ms": 1719.3,
+    "stt_ms": 1.2,
+    "llm_ttft_ms": 376.0
+   }
+  ],
+  "ignored": [
+   {
+    "t": 27.726,
+    "ev": "ignored",
+    "text": "אממ\"ם",
+    "why": "filler",
+    "stt_ms": 44.3
+   }
+  ]
+ }
+}

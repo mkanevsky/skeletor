@@ -16,3 +16,7 @@ test_audio/
 *.onnx
 .env
 *.log
+vad/
+out_live/*
+!out_live/test_report.json
+live_sim_out*
